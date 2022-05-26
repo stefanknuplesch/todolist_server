@@ -2,10 +2,12 @@ package com.campus02.todolist.model.users;
 
 import am.ik.yavi.core.ConstraintViolations;
 import com.campus02.todolist.model.BusinessLogicViolationException;
-import com.campus02.todolist.model.users.dtos.EditUserDto;
+import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
 import com.campus02.todolist.model.users.dtos.UserDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -21,21 +23,6 @@ public class UsersService {
         this.usersRepository = usersRepository;
     }
 
-    public List<User> getAllUsers() {
-        return StreamSupport
-                .stream(this.usersRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-    }
-
-    public User getUserById(int userId) {
-        User user = this.usersRepository.findById(userId).orElse(null);
-
-        if (user == null)
-            throw new EntityNotFoundException("The requested user does not exist.");
-
-        return user;
-    }
-
     public User registerUser(NewUserDto newUser) {
         User user = new User();
 
@@ -45,22 +32,15 @@ public class UsersService {
         if (!violations.isValid())
             throw new BusinessLogicViolationException(violations);
 
+        if (this.usersRepository.existsByEmail(user.getEmail()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "An user with the given email already exists.");
+
         this.usersRepository.save(user);
 
         return user;
     }
 
-    public User getUserByMailAndPassword(UserDto userToLogin) {
-        User user = new User();
-
-        userToLogin.mapTo(user);
-
-        /*
-        TODO:
-        Implement login check and return user
-        IF not found ==> Login failed! ==> RETURN NULL
-         */
-
-        return user;
+    public User loginUser(LoginUserDto credentials) {
+        return this.usersRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword());
     }
 }
