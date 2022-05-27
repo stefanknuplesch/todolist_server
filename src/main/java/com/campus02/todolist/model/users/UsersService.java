@@ -4,15 +4,9 @@ import am.ik.yavi.core.ConstraintViolations;
 import com.campus02.todolist.model.BusinessLogicViolationException;
 import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
-import com.campus02.todolist.model.users.dtos.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class UsersService {

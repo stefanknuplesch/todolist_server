@@ -3,7 +3,6 @@ package com.campus02.todolist.model.users;
 import am.ik.yavi.builder.ValidatorBuilder;
 import am.ik.yavi.constraint.CharSequenceConstraint;
 import am.ik.yavi.core.Validator;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 

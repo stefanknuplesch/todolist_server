@@ -3,14 +3,10 @@ package com.campus02.todolist.controllers;
 import com.campus02.todolist.model.users.User;
 import com.campus02.todolist.model.users.UsersService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
 import com.campus02.todolist.model.users.dtos.UserDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
