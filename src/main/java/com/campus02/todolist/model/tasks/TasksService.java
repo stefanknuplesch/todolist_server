@@ -48,13 +48,20 @@ public class TasksService {
     }
 
     public Task deleteTask(int id){
-
-        return null ;
+        Task task = this.tasksRepository.findById(id).orElse(null);
+        if (task == null) throw new EntityNotFoundException("The requested task does not exist!");
+        this.tasksRepository.deleteById(id);
+        return task;
     }
 
+    public Task getTask(int id){
+        Task task = this.tasksRepository.findById(id).orElse(null);
+        if (task == null) throw new EntityNotFoundException("The requested task does not exist!");
+        return task;
+    }
 
-    public List<Task> getAllTasks(){
-        return (List<Task>) this.tasksRepository.findAll();
+    public List<Task> getAllTasks(int originatorUserId){
+        return (List<Task>) this.tasksRepository.findByOriginatorUserIdOrIsPublicIsTrue(originatorUserId);
     }
 
 

@@ -30,9 +30,6 @@ public class Task {
   private int lastModifiedUserId;
 
   @Column
-  private int lastModifiedTime;
-
-  @Column
   private Date lastModifiedTimestamp;
 
   @Column
@@ -114,13 +111,6 @@ public class Task {
     this.isPublic = ispublic;
   }
 
-  public int getLastModifiedTime() {
-    return lastModifiedTime;
-  }
-
-  public void setLastModifiedTime(int lastModifiedTime) {
-    this.lastModifiedTime = lastModifiedTime;
-  }
 
   public boolean getIsCompleted() {
     return isCompleted;
