@@ -5,6 +5,7 @@ import com.campus02.todolist.model.users.UsersService;
 
 import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
+import com.campus02.todolist.model.users.dtos.UserCredentialsDto;
 import com.campus02.todolist.model.users.dtos.UserDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +29,10 @@ public class UsersController {
   }
 
   @PostMapping("/login")
-  public UserDto loginUser(@RequestBody LoginUserDto credentials) {
+  public LoginUserDto loginUser(@RequestBody UserCredentialsDto credentials) {
     var user = this.usersService.loginUser(credentials);
     if (user.isPresent()) {
-      return UserDto.from(user.get());
+      return LoginUserDto.from(user.get());
     }
     else {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed with given credentials.");

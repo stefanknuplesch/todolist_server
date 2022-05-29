@@ -4,6 +4,7 @@ import am.ik.yavi.core.ConstraintViolations;
 import com.campus02.todolist.model.BusinessLogicViolationException;
 import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
+import com.campus02.todolist.model.users.dtos.UserCredentialsDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +37,7 @@ public class UsersService {
         return user;
     }
 
-    public Optional<User> loginUser(LoginUserDto credentials) {
+    public Optional<User> loginUser(UserCredentialsDto credentials) {
         return this.usersRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword());
     }
 }

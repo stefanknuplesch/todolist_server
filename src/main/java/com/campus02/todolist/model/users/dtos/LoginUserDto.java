@@ -1,12 +1,19 @@
 package com.campus02.todolist.model.users.dtos;
 
+import com.campus02.todolist.model.users.User;
+
 public class LoginUserDto {
-  private String email;
-  private String password;
-  public String getEmail() {
-    return email;
-  }
-  public String getPassword() {
-    return password;
+  public int id;
+  public String email;
+  public String name;
+
+  public static LoginUserDto from(User user) {
+    LoginUserDto result = new LoginUserDto();
+
+    result.id = user.getId();
+    result.email = user.getEmail();
+    result.name = user.getName();
+
+    return result;
   }
 }
