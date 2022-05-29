@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController()
 @RequestMapping("/users")
 public class UsersController {
@@ -27,9 +29,9 @@ public class UsersController {
 
   @PostMapping("/login")
   public UserDto loginUser(@RequestBody LoginUserDto credentials) {
-    User user = this.usersService.loginUser(credentials);
-    if (user != null) {
-      return UserDto.from(this.usersService.loginUser(credentials));
+    var user = this.usersService.loginUser(credentials);
+    if (user.isPresent()) {
+      return UserDto.from(user.get());
     }
     else {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed with given credentials.");

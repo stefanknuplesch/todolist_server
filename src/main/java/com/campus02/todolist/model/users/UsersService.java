@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 public class UsersService {
 
@@ -34,7 +36,7 @@ public class UsersService {
         return user;
     }
 
-    public User loginUser(LoginUserDto credentials) {
+    public Optional<User> loginUser(LoginUserDto credentials) {
         return this.usersRepository.findByEmailAndPassword(credentials.getEmail(), credentials.getPassword());
     }
 }
