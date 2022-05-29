@@ -2,16 +2,12 @@ package com.campus02.todolist.model.tasks.dtos;
 
 import com.campus02.todolist.model.tasks.Task;
 
+import java.util.Date;
+
 public class EditTaskDto extends BaseTaskDto{
 
-    public int id;
 
-
-    public static TaskDto from(Task task){
-
-       TaskDto result = new TaskDto();
-
-
-      return result;
-    }
+    public int originatorUserId;
+    public Date lastModifiedTimestamp;
+    public int lastModifiedUserId;
 }

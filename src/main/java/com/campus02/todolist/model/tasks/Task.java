@@ -6,6 +6,12 @@ import am.ik.yavi.core.Validator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+
 
 @Entity
 public class Task {
@@ -26,8 +32,8 @@ public class Task {
   @Column
   private int lastModifiedTime;
 
- // @Column
-  //private Timestamp timestamp;
+  @Column
+  private Date lastModifiedTimestamp;
 
   @Column
   private boolean isPublic;
@@ -35,10 +41,22 @@ public class Task {
   @Column
   private boolean isCompleted;
 
+
+
   public static final Validator<Task> validator = ValidatorBuilder.<Task>of()
           .constraint(Task::getTitle, "name", CharSequenceConstraint::notBlank)
           .constraint(Task::getDescription, "description", CharSequenceConstraint::notBlank)
           .build();
+
+
+  public List<Task> getTasks(){
+
+    List<Task> tasklist = null;
+
+
+
+    return tasklist;
+  }
 
   public int getId() {
     return id;
@@ -80,13 +98,13 @@ public class Task {
     this.lastModifiedUserId = lastModifiedUserId;
   }
 
-  /*public Timestamp getTimestamp() {
-    return timestamp;
+  public Date getLastModifiedTimestamp() {
+    return lastModifiedTimestamp;
   }
 
-  public void setTimestamp(Timestamp timestamp) {
-    this.timestamp = timestamp;
-  }*/
+  public void setLastModifiedTimestamp(Date lastModifiedTimestamp) {
+    this.lastModifiedTimestamp = lastModifiedTimestamp;
+  }
 
   public boolean getIsPublic() {
     return isPublic;
@@ -104,7 +122,7 @@ public class Task {
     this.lastModifiedTime = lastModifiedTime;
   }
 
-  public boolean isIsCompleted() {
+  public boolean getIsCompleted() {
     return isCompleted;
   }
 
