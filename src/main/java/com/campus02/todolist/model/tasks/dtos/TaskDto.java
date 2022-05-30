@@ -7,9 +7,9 @@ import java.util.Date;
 
 public class TaskDto extends BaseTaskDto {
 
-  public int id;
+  public Integer id;
   public UserInfoDto originatorUser;
-  public long lastModifiedTimestamp;
+  public Long lastModifiedTimestamp;
   public UserInfoDto lastModifiedUser;
 
   public static TaskDto from(Task task) {

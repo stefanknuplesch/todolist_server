@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface TasksRepository extends CrudRepository<Task, Integer> {
-    List<Task> findByOriginatorUserIdOrIsPublicIsTrue(int originatorUserId);
+    List<Task> findByOriginatorUserIdOrIsPublicIsTrue(Integer originatorUserId);
 }

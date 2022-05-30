@@ -22,15 +22,15 @@ public class TasksService {
         this.usersRepository = usersRepository;
     }
 
-    public Task getTask(int id){
+    public Task getTask(Integer id){
         return this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
     }
 
-    public List<Task> getAllTasks(int originatorUserId){
+    public List<Task> getAllTasks(Integer originatorUserId){
         return this.tasksRepository.findByOriginatorUserIdOrIsPublicIsTrue(originatorUserId);
     }
 
-    public Task createTask(NewTaskDto newTask, int userId) {
+    public Task createTask(NewTaskDto newTask, Integer userId) {
         User clientUser = this.usersRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("The requested user does not exist!"));
 
         Task task = new Task();
@@ -47,7 +47,7 @@ public class TasksService {
         return task;
     }
 
-    public Task editTask(EditTaskDto editTaskDto, int id, int userId){
+    public Task editTask(EditTaskDto editTaskDto, Integer id, Integer userId){
         Task task = this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
         User clientUser = this.usersRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("The requested user does not exist!"));
 
@@ -64,7 +64,7 @@ public class TasksService {
         return task;
     }
 
-    public Task deleteTask(int id){
+    public Task deleteTask(Integer id){
         Task task = this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
         this.tasksRepository.deleteById(id);
         return task;

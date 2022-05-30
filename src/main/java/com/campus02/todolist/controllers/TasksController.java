@@ -23,31 +23,31 @@ public class TasksController {
 
     // GET TASKS
     @GetMapping("/{id}")
-    public TaskDto getTask (@PathVariable int id, @RequestHeader int userId){
+    public TaskDto getTask (@PathVariable Integer id, @RequestHeader Integer userId){
         return TaskDto.from(this.taskService.getTask(id));
     }
 
     @GetMapping()
-    public List<TaskOverviewDto> getUsersTasks (@RequestHeader int userId){
+    public List<TaskOverviewDto> getUsersTasks (@RequestHeader Integer userId){
         return this.taskService.getAllTasks(userId).stream().map(TaskOverviewDto::from).collect(Collectors.toList());
     }
 
     // INSERT
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDto createTask (@RequestBody NewTaskDto task, @RequestHeader int userId) {
+    public TaskDto createTask (@RequestBody NewTaskDto task, @RequestHeader Integer userId) {
         return TaskDto.from(this.taskService.createTask(task, userId));
     }
 
     // UPDATE
     @PutMapping("/{id}")
-    public TaskDto editTask (@RequestBody EditTaskDto task, @PathVariable int id, @RequestHeader int userId){
+    public TaskDto editTask (@RequestBody EditTaskDto task, @PathVariable Integer id, @RequestHeader Integer userId){
         return TaskDto.from(this.taskService.editTask(task, id, userId));
     }
 
     // DELETE
     @DeleteMapping("/{id}")
-    public TaskDto deleteTask (@PathVariable int id, @RequestHeader int userId){
+    public TaskDto deleteTask (@PathVariable Integer id, @RequestHeader Integer userId){
         return TaskDto.from(this.taskService.deleteTask(id));
     }
 

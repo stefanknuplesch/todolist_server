@@ -12,7 +12,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private Integer id;
   @Column(nullable = false, length = 128)
   private String email;
   @Column(nullable = false, length = 64)
@@ -27,11 +27,11 @@ public class User {
                   .password(p -> p.alphabets().numbers().build()))
           .build();
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 

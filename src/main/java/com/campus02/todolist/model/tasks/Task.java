@@ -14,7 +14,7 @@ public class Task {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private Integer id;
   @Column(nullable = false, length = 32)
   private String title;
   @Column(nullable = false, length = 256)
@@ -29,7 +29,7 @@ public class Task {
   private User lastModifiedUser;
 
   @Column
-  private long lastModifiedTimestamp;
+  private Long lastModifiedTimestamp;
 
   @Column
   private boolean isPublic;
@@ -42,11 +42,11 @@ public class Task {
           .constraint(Task::getDescription, "description", CharSequenceConstraint::notBlank)
           .build();
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -78,7 +78,7 @@ public class Task {
     return lastModifiedUser;
   }
 
-  public long getLastModifiedTimestamp() {
+  public Long getLastModifiedTimestamp() {
     return lastModifiedTimestamp;
   }
 

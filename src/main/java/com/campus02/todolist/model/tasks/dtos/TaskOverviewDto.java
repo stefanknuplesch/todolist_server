@@ -6,9 +6,9 @@ import java.util.Date;
 
 public class TaskOverviewDto extends BaseTaskDto {
 
-  public int id;
-  public long lastModifiedTimestamp;
-  public int lastModifiedUserId;
+  public Integer id;
+  public Long lastModifiedTimestamp;
+  public Integer lastModifiedUserId;
 
   public static TaskOverviewDto from(Task task) {
     TaskOverviewDto result = new TaskOverviewDto();
@@ -16,7 +16,7 @@ public class TaskOverviewDto extends BaseTaskDto {
     result.title = task.getTitle();
     result.isPublic = task.getIsPublic();
     var lmu = task.getLastModifiedUser();
-    result.lastModifiedUserId = lmu != null ? lmu.getId() : 0;
+    result.lastModifiedUserId = lmu != null ? lmu.getId() : null;
     result.lastModifiedTimestamp = task.getLastModifiedTimestamp();
     result.isCompleted = task.getIsCompleted();
 

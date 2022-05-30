@@ -3,7 +3,7 @@ package com.campus02.todolist.model.users.dtos;
 import com.campus02.todolist.model.users.User;
 
 public class UserInfoDto {
-  public int id;
+  public Integer id;
   public String email;
   public String name;
 
