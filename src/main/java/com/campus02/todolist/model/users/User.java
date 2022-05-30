@@ -7,6 +7,7 @@ import am.ik.yavi.core.Validator;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
   @Id
@@ -56,5 +57,15 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", name='" + name + '\'' +
+            '}';
   }
 }

@@ -4,6 +4,8 @@ import com.campus02.todolist.model.tasks.TasksService;
 import com.campus02.todolist.model.tasks.dtos.EditTaskDto;
 import com.campus02.todolist.model.tasks.dtos.NewTaskDto;
 import com.campus02.todolist.model.tasks.dtos.TaskDto;
+import com.campus02.todolist.model.tasks.dtos.TaskOverviewDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,36 +15,40 @@ import java.util.stream.Collectors;
 @RequestMapping("/tasks")
 public class TasksController {
 
-  private final TasksService taskService;
+    private final TasksService taskService;
 
-  public TasksController(TasksService taskService) {
-    this.taskService = taskService;
-  }
+    public TasksController(TasksService taskService) {
+        this.taskService = taskService;
+    }
 
-  @PostMapping()
-  public TaskDto createTask (@RequestBody NewTaskDto task) {
-    return TaskDto.from(this.taskService.createTask(task));
-  }
+    // GET TASKS
+    @GetMapping("/{id}")
+    public TaskDto getTask (@PathVariable int id, @RequestHeader int userId){
+        return TaskDto.from(this.taskService.getTask(id));
+    }
 
-@DeleteMapping("/{id}")
-  public TaskDto deleteTask (@PathVariable int id){
-    return TaskDto.from(this.taskService.deleteTask(id));
- }
+    @GetMapping()
+    public List<TaskOverviewDto> getUsersTasks (@RequestHeader int userId){
+        return this.taskService.getAllTasks(userId).stream().map(TaskOverviewDto::from).collect(Collectors.toList());
+    }
 
- @GetMapping("/{id}")
- public TaskDto getTask (@PathVariable int id){
-      return TaskDto.from(this.taskService.getTask(id));
- }
+    // INSERT
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskDto createTask (@RequestBody NewTaskDto task, @RequestHeader int userId) {
+        return TaskDto.from(this.taskService.createTask(task, userId));
+    }
 
- @GetMapping()
- public List<TaskDto> getUsersTasks (@RequestParam int userId){
-     return taskService.getAllTasks(userId).stream().map(TaskDto::from).collect(Collectors.toList());
- }
+    // UPDATE
+    @PutMapping("/{id}")
+    public TaskDto editTask (@RequestBody EditTaskDto task, @PathVariable int id, @RequestHeader int userId){
+        return TaskDto.from(this.taskService.editTask(task, id, userId));
+    }
 
-
- @PutMapping("/{id}")
-    public TaskDto editTask (@RequestBody EditTaskDto task, @PathVariable int id){
-      return TaskDto.from(this.taskService.editTask(task, id));
- }
+    // DELETE
+    @DeleteMapping("/{id}")
+    public TaskDto deleteTask (@PathVariable int id, @RequestHeader int userId){
+        return TaskDto.from(this.taskService.deleteTask(id));
+    }
 
 }

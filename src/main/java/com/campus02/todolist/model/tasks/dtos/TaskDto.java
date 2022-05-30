@@ -1,33 +1,29 @@
 package com.campus02.todolist.model.tasks.dtos;
 
 import com.campus02.todolist.model.tasks.Task;
+import com.campus02.todolist.model.users.dtos.UserInfoDto;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
-
 
 public class TaskDto extends BaseTaskDto {
 
   public int id;
-  public int originatorUserId;
-  public Date lastModifiedTimestamp;
-
-  public int lastModifiedUserId;
-
-
+  public UserInfoDto originatorUser;
+  public long lastModifiedTimestamp;
+  public UserInfoDto lastModifiedUser;
 
   public static TaskDto from(Task task) {
     TaskDto result = new TaskDto();
     result.id = task.getId();
     result.title = task.getTitle();
     result.description = task.getDescription();
-    result.originatorUserId = task.getOriginatorUserId();
     result.isPublic = task.getIsPublic();
     result.lastModifiedTimestamp = task.getLastModifiedTimestamp();
-    result.lastModifiedUserId = task.getLastModifiedUserId();
     result.isCompleted = task.getIsCompleted();
-
+    var ou = task.getOriginatorUser();
+    result.originatorUser = ou != null ? UserInfoDto.from(ou) : null;
+    var lmu = task.getLastModifiedUser();
+    result.lastModifiedUser = lmu != null ? UserInfoDto.from(lmu) : null;
 
     return result;
   }

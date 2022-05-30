@@ -3,17 +3,13 @@ package com.campus02.todolist.model.tasks;
 import am.ik.yavi.builder.ValidatorBuilder;
 import am.ik.yavi.constraint.CharSequenceConstraint;
 import am.ik.yavi.core.Validator;
+import com.campus02.todolist.model.users.User;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 
 
 @Entity
+@Table(name = "tasks")
 public class Task {
 
   @Id
@@ -23,14 +19,17 @@ public class Task {
   private String title;
   @Column(nullable = false, length = 256)
   private String description;
-  @Column(nullable = false)
-  private int originatorUserId;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(referencedColumnName = "id", name = "originator_user_id")
+  private User originatorUser;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(referencedColumnName = "id", name = "last_modified_user_id")
+  private User lastModifiedUser;
 
   @Column
-  private int lastModifiedUserId;
-
-  @Column
-  private Date lastModifiedTimestamp;
+  private long lastModifiedTimestamp;
 
   @Column
   private boolean isPublic;
@@ -38,22 +37,10 @@ public class Task {
   @Column
   private boolean isCompleted;
 
-
-
   public static final Validator<Task> validator = ValidatorBuilder.<Task>of()
           .constraint(Task::getTitle, "name", CharSequenceConstraint::notBlank)
           .constraint(Task::getDescription, "description", CharSequenceConstraint::notBlank)
           .build();
-
-
-  public List<Task> getTasks(){
-
-    List<Task> tasklist = null;
-
-
-
-    return tasklist;
-  }
 
   public int getId() {
     return id;
@@ -79,46 +66,54 @@ public class Task {
     this.description = description;
   }
 
-  public int getOriginatorUserId() {
-    return originatorUserId;
+  public User getOriginatorUser() {
+    return originatorUser;
   }
 
-  public void setOriginatorUserId(int originatorUserId) {
-    this.originatorUserId = originatorUserId;
+  public void setOriginatorUser(User originatorUser) {
+    this.originatorUser = originatorUser;
   }
 
-  public int getLastModifiedUserId() {
-    return lastModifiedUserId;
+  public User getLastModifiedUser() {
+    return lastModifiedUser;
   }
 
-  public void setLastModifiedUserId(int lastModifiedUserId) {
-    this.lastModifiedUserId = lastModifiedUserId;
-  }
-
-  public Date getLastModifiedTimestamp() {
+  public long getLastModifiedTimestamp() {
     return lastModifiedTimestamp;
-  }
-
-  public void setLastModifiedTimestamp(Date lastModifiedTimestamp) {
-    this.lastModifiedTimestamp = lastModifiedTimestamp;
   }
 
   public boolean getIsPublic() {
     return isPublic;
   }
 
-  public void setIsPublic(boolean ispublic) {
-    this.isPublic = ispublic;
+  public void setIsPublic(boolean isPublic) {
+    this.isPublic = isPublic;
   }
-
 
   public boolean getIsCompleted() {
     return isCompleted;
   }
 
-  public void setIsCompleted(boolean completedBoolean) {
-    this.isCompleted = completedBoolean;
+  public void setIsCompleted(boolean isCompleted) {
+    this.isCompleted = isCompleted;
+  }
+
+  public void setLastModifiedInfo(User user) {
+    lastModifiedTimestamp = System.currentTimeMillis();
+    lastModifiedUser = user;
+  }
+
+  @Override
+  public String toString() {
+    return "Task{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", originatorUser=" + originatorUser +
+            ", lastModifiedUser=" + lastModifiedUser +
+            ", lastModifiedTimestamp=" + lastModifiedTimestamp +
+            ", isPublic=" + isPublic +
+            ", isCompleted=" + isCompleted +
+            '}';
   }
 }
-
-

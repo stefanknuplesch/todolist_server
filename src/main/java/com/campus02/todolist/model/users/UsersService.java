@@ -2,7 +2,6 @@ package com.campus02.todolist.model.users;
 
 import am.ik.yavi.core.ConstraintViolations;
 import com.campus02.todolist.model.BusinessLogicViolationException;
-import com.campus02.todolist.model.users.dtos.LoginUserDto;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
 import com.campus02.todolist.model.users.dtos.UserCredentialsDto;
 import org.springframework.http.HttpStatus;
