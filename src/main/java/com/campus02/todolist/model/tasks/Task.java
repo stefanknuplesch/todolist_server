@@ -15,9 +15,9 @@ public class Task {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-  @Column(nullable = false, length = 32)
+  @Column(nullable = false, length = 64)
   private String title;
-  @Column(nullable = false, length = 256)
+  @Column(nullable = false, length = 1024)
   private String description;
 
   @ManyToOne(fetch = FetchType.LAZY)
