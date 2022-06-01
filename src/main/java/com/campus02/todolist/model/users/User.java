@@ -3,6 +3,7 @@ package com.campus02.todolist.model.users;
 import am.ik.yavi.builder.ValidatorBuilder;
 import am.ik.yavi.constraint.CharSequenceConstraint;
 import am.ik.yavi.core.Validator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonValue
   private Integer id;
   @Column(nullable = false, length = 128)
   private String email;

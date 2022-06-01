@@ -4,36 +4,40 @@ import am.ik.yavi.builder.ValidatorBuilder;
 import am.ik.yavi.constraint.CharSequenceConstraint;
 import am.ik.yavi.core.Validator;
 import com.campus02.todolist.model.users.User;
+import org.hibernate.Session;
 
 import javax.persistence.*;
-
+import java.util.UUID;
 
 @Entity
 @Table(name = "tasks")
 public class Task {
 
+  @PrePersist
+  public void fillIdIfNull() {
+    if (id != null)
+      return;
+
+    this.setId(UUID.randomUUID());
+  }
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  @Column(name = "id", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
+  private UUID id;
   @Column(nullable = false, length = 64)
   private String title;
   @Column(nullable = false, length = 1024)
   private String description;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(referencedColumnName = "id", name = "originator_user_id")
+  @JoinColumn(name = "originator_user_id", insertable = false, updatable = false)
+  @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
   private User originatorUser;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(referencedColumnName = "id", name = "last_modified_user_id")
-  private User lastModifiedUser;
-
+  @Column(name = "originator_user_id")
+  private Integer originatorUserId;
   @Column
   private Long lastModifiedTimestamp;
-
   @Column
   private boolean isPublic;
-
   @Column
   private boolean isCompleted;
 
@@ -42,11 +46,11 @@ public class Task {
           .constraint(Task::getDescription, "description", CharSequenceConstraint::notBlank)
           .build();
 
-  public Integer getId() {
+  public UUID getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(UUID id) {
     this.id = id;
   }
 
@@ -74,33 +78,35 @@ public class Task {
     this.originatorUser = originatorUser;
   }
 
-  public User getLastModifiedUser() {
-    return lastModifiedUser;
+  public Integer getOriginatorUserId() {
+    return originatorUserId;
   }
 
-  public Long getLastModifiedTimestamp() {
-    return lastModifiedTimestamp;
+  public void setOriginatorUserId(Integer originatorUserId) {
+    this.originatorUserId = originatorUserId;
   }
 
-  public boolean getIsPublic() {
+  public boolean isPublic() {
     return isPublic;
   }
 
-  public void setIsPublic(boolean isPublic) {
-    this.isPublic = isPublic;
+  public void setPublic(boolean aPublic) {
+    isPublic = aPublic;
   }
 
-  public boolean getIsCompleted() {
+  public boolean isCompleted() {
     return isCompleted;
   }
 
-  public void setIsCompleted(boolean isCompleted) {
-    this.isCompleted = isCompleted;
+  public void setCompleted(boolean completed) {
+    isCompleted = completed;
   }
 
-  public void setLastModifiedInfo(User user) {
-    lastModifiedTimestamp = System.currentTimeMillis();
-    lastModifiedUser = user;
+  public void setLastModifiedTimestamp(Long lastModifiedTimestamp) {
+    this.lastModifiedTimestamp = lastModifiedTimestamp;
+  }
+  public Long getLastModifiedTimestamp() {
+    return lastModifiedTimestamp;
   }
 
   @Override
@@ -110,7 +116,6 @@ public class Task {
             ", title='" + title + '\'' +
             ", description='" + description + '\'' +
             ", originatorUser=" + originatorUser +
-            ", lastModifiedUser=" + lastModifiedUser +
             ", lastModifiedTimestamp=" + lastModifiedTimestamp +
             ", isPublic=" + isPublic +
             ", isCompleted=" + isCompleted +

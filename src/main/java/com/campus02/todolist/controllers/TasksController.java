@@ -1,10 +1,7 @@
 package com.campus02.todolist.controllers;
 
 import com.campus02.todolist.model.tasks.TasksService;
-import com.campus02.todolist.model.tasks.dtos.EditTaskDto;
-import com.campus02.todolist.model.tasks.dtos.NewTaskDto;
-import com.campus02.todolist.model.tasks.dtos.TaskDto;
-import com.campus02.todolist.model.tasks.dtos.TaskOverviewDto;
+import com.campus02.todolist.model.tasks.dtos.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,34 +18,16 @@ public class TasksController {
         this.taskService = taskService;
     }
 
-    // GET TASKS
-    @GetMapping("/{id}")
-    public TaskDto getTask (@PathVariable Integer id, @RequestHeader Integer userId){
-        return TaskDto.from(this.taskService.getTask(id));
+    // FETCH
+    @GetMapping("/fetch")
+    public List<FetchTaskDto> fetchTaskInfo(@RequestHeader Integer userId) {
+        return this.taskService.fetchTasksFromUser(userId).stream().map(FetchTaskDto::from).collect(Collectors.toList());
     }
 
-    @GetMapping()
-    public List<TaskOverviewDto> getUsersTasks (@RequestHeader Integer userId){
-        return this.taskService.getAllTasks(userId).stream().map(TaskOverviewDto::from).collect(Collectors.toList());
-    }
-
-    // INSERT
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public TaskDto createTask (@RequestBody NewTaskDto task, @RequestHeader Integer userId) {
-        return TaskDto.from(this.taskService.createTask(task, userId));
-    }
-
-    // UPDATE
-    @PutMapping("/{id}")
-    public TaskDto editTask (@RequestBody EditTaskDto task, @PathVariable Integer id, @RequestHeader Integer userId){
-        return TaskDto.from(this.taskService.editTask(task, id, userId));
-    }
-
-    // DELETE
-    @DeleteMapping("/{id}")
-    public TaskDto deleteTask (@PathVariable Integer id, @RequestHeader Integer userId){
-        return TaskDto.from(this.taskService.deleteTask(id));
+    // SYNCHRONIZE
+    @PostMapping("/sync")
+    public SyncResponseDto synchronizeTasks (@RequestHeader Integer userId, @RequestBody SyncRequestDto syncRequest) {
+        return this.taskService.synchronizeTasksFromUser(syncRequest, userId);
     }
 
 }

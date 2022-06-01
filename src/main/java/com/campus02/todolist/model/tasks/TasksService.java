@@ -1,73 +1,55 @@
 package com.campus02.todolist.model.tasks;
 
-import am.ik.yavi.core.ConstraintViolations;
-import com.campus02.todolist.model.BusinessLogicViolationException;
-import com.campus02.todolist.model.tasks.dtos.EditTaskDto;
-import com.campus02.todolist.model.tasks.dtos.NewTaskDto;
+import com.campus02.todolist.model.tasks.dtos.SyncRequestDto;
+import com.campus02.todolist.model.tasks.dtos.SyncResponseDto;
+import com.campus02.todolist.model.tasks.dtos.TaskDto;
+import com.campus02.todolist.model.tasks.repository.TaskFetchInfo;
+import com.campus02.todolist.model.tasks.repository.TasksRepository;
 import com.campus02.todolist.model.users.User;
 import com.campus02.todolist.model.users.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class TasksService {
 
     private final TasksRepository tasksRepository;
-    private final UsersRepository usersRepository;
 
     public TasksService(TasksRepository tasksRepository, UsersRepository usersRepository) {
         this.tasksRepository = tasksRepository;
-        this.usersRepository = usersRepository;
     }
 
-    public Task getTask(Integer id){
-        return this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
+    public List<TaskFetchInfo> fetchTasksFromUser(Integer userId) {
+        return this.tasksRepository.findByOriginatorUser_IdOrIsPublicIsTrue(userId);
     }
 
-    public List<Task> getAllTasks(Integer originatorUserId){
-        return this.tasksRepository.findByOriginatorUserIdOrIsPublicIsTrue(originatorUserId);
+    public SyncResponseDto synchronizeTasksFromUser(SyncRequestDto syncRequest, Integer userId) {
+        SyncResponseDto res = new SyncResponseDto();
+        // TODO: userid handling?
+        res.retrieved = handleGet(syncRequest.toRetrieve);
+        res.persisted = handlePost(syncRequest.toPersist);
+        return res;
+    }
+    private List<TaskDto> handleGet(List<UUID> list) {
+        var tasks = this.tasksRepository.findAllById(list);
+        return StreamSupport.stream(tasks.spliterator(), false).map(TaskDto::from).collect(Collectors.toList());
     }
 
-    public Task createTask(NewTaskDto newTask, Integer userId) {
-        User clientUser = this.usersRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("The requested user does not exist!"));
-
-        Task task = new Task();
-        newTask.mapTo(task);
-        task.setOriginatorUser(clientUser);
-        task.setLastModifiedInfo(clientUser);
-
-       /* ConstraintViolations violations = Task.validator.validate(task);
-        if (!violations.isValid())
-            throw new BusinessLogicViolationException(violations);*/
-
-        //System.out.println(task.toString());
-        this.tasksRepository.save(task);
-        return task;
+    private List<UUID> handlePost(List<TaskDto> list) {
+        // TODO: save durchführen + timestamp
+        var tasks = list.stream().map(TaskDto::to).toList();
+        //var tasks = this.tasksRepository.saveAll(list);
+        return tasks.stream().map(Task::getId).collect(Collectors.toList());
+        //return StreamSupport.stream(tasks.spliterator(), false).map(Task::getId).collect(Collectors.toList());
     }
-
-    public Task editTask(EditTaskDto editTaskDto, Integer id, Integer userId){
-        Task task = this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
-        User clientUser = this.usersRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("The requested user does not exist!"));
-
-        editTaskDto.mapTo(task);
-        task.setLastModifiedInfo(clientUser);
-
-       /* ConstraintViolations violations = Task.validator.validate(task);
-        if (!violations.isValid())
-            throw new BusinessLogicViolationException(violations);*/
-
-        //last modified user id and timestamp setzen
-
-        this.tasksRepository.save(task);
-        return task;
-    }
-
-    public Task deleteTask(Integer id){
-        Task task = this.tasksRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("The requested task does not exist!"));
-        this.tasksRepository.deleteById(id);
-        return task;
+    private void handleDel(List<UUID> list) {
+        //this.tasksRepository.deleteAllById(list);
     }
 
 }
