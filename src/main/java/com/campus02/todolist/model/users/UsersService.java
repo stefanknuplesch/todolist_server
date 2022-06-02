@@ -1,7 +1,6 @@
 package com.campus02.todolist.model.users;
 
 import am.ik.yavi.core.ConstraintViolations;
-import com.campus02.todolist.model.BusinessLogicViolationException;
 import com.campus02.todolist.model.users.dtos.NewUserDto;
 import com.campus02.todolist.model.users.dtos.UserCredentialsDto;
 import org.springframework.http.HttpStatus;
@@ -24,12 +23,8 @@ public class UsersService {
 
         newUser.mapTo(user);
 
-        ConstraintViolations violations = User.validator.validate(user);
-        if (!violations.isValid())
-            throw new BusinessLogicViolationException(violations);
-
         if (this.usersRepository.existsByEmail(user.getEmail()))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "An user with the given email already exists.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Es existiert bereits ein Benutzer mit dieser E-Mail Adresse!");
 
         this.usersRepository.save(user);
 

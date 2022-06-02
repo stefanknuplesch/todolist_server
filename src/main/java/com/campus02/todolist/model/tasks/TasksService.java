@@ -7,7 +7,9 @@ import com.campus02.todolist.model.tasks.repository.TaskFetchInfo;
 import com.campus02.todolist.model.tasks.repository.TasksRepository;
 import com.campus02.todolist.model.users.User;
 import com.campus02.todolist.model.users.UsersRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -20,18 +22,25 @@ import java.util.stream.StreamSupport;
 public class TasksService {
 
     private final TasksRepository tasksRepository;
+    private final UsersRepository usersRepository;
 
     public TasksService(TasksRepository tasksRepository, UsersRepository usersRepository) {
         this.tasksRepository = tasksRepository;
+        this.usersRepository = usersRepository;
     }
 
     public List<TaskFetchInfo> fetchTasksFromUser(Integer userId) {
+        if (!userExists(userId))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Kein Benutzer mit dieser ID vorhanden!");
+
         return this.tasksRepository.findByOriginatorUser_IdOrIsPublicIsTrue(userId);
     }
 
     public SyncResponseDto synchronizeTasksFromUser(SyncRequestDto syncRequest, Integer userId) {
+        if (!userExists(userId))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Kein Benutzer mit dieser ID vorhanden!");
+
         SyncResponseDto res = new SyncResponseDto();
-        // TODO: userid handling?
         res.retrieved = handleGet(syncRequest.toRetrieve);
         res.persisted = handlePost(syncRequest.toPersist);
         res.deleted = handleDel(syncRequest.toDelete);
@@ -65,6 +74,11 @@ public class TasksService {
             result = tasks.stream().map(Task::getId).collect(Collectors.toList());
             return result;
         }
+    }
+
+    private boolean userExists(int userId) {
+        var u = usersRepository.findById(userId);
+        return u.isPresent();
     }
 
 }

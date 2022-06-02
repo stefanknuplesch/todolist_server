@@ -31,7 +31,7 @@ public class UsersController {
       return UserInfoDto.from(user.get());
     }
     else {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed with given credentials.");
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login fehlgeschlagen! Ungültige Email/Passwort-Kombination!");
     }
   }
 }
