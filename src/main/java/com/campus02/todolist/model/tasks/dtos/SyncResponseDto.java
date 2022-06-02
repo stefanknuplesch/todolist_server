@@ -9,4 +9,6 @@ import java.util.UUID;
 public class SyncResponseDto {
     public List<UUID> persisted;
     public List<TaskDto> retrieved;
+
+    public List<UUID> deleted;
 }

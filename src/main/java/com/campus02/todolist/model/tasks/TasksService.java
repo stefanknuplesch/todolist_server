@@ -34,22 +34,37 @@ public class TasksService {
         // TODO: userid handling?
         res.retrieved = handleGet(syncRequest.toRetrieve);
         res.persisted = handlePost(syncRequest.toPersist);
+        res.deleted = handleDel(syncRequest.toDelete);
         return res;
     }
     private List<TaskDto> handleGet(List<UUID> list) {
+        List<TaskDto> result = new ArrayList<>();
+        if (list.isEmpty())
+            return result;
+
         var tasks = this.tasksRepository.findAllById(list);
-        return StreamSupport.stream(tasks.spliterator(), false).map(TaskDto::from).collect(Collectors.toList());
+        result = StreamSupport.stream(tasks.spliterator(), false).map(TaskDto::from).collect(Collectors.toList());
+        return result;
     }
 
     private List<UUID> handlePost(List<TaskDto> list) {
-        // TODO: save durchführen + timestamp
-        var tasks = list.stream().map(TaskDto::to).toList();
-        //var tasks = this.tasksRepository.saveAll(list);
-        return tasks.stream().map(Task::getId).collect(Collectors.toList());
-        //return StreamSupport.stream(tasks.spliterator(), false).map(Task::getId).collect(Collectors.toList());
+        List<UUID> result = new ArrayList<>();
+        if (list.isEmpty())
+            return result;
+
+        var persisted = this.tasksRepository.saveAll(list.stream().map(TaskDto::to).toList());
+        result = StreamSupport.stream(persisted.spliterator(), false).map(Task::getId).collect(Collectors.toList());
+        return result;
     }
-    private void handleDel(List<UUID> list) {
-        //this.tasksRepository.deleteAllById(list);
+    private List<UUID> handleDel(List<UUID> list) {
+        List<UUID> result = new ArrayList<>();
+        if (list.isEmpty())
+            return result;
+        else {
+            var tasks = this.tasksRepository.deleteByIdIn(list);
+            result = tasks.stream().map(Task::getId).collect(Collectors.toList());
+            return result;
+        }
     }
 
 }
