@@ -18,7 +18,7 @@ public class UsersController {
     this.usersService = usersService;
   }
 
-  @PostMapping()
+  @PostMapping("/register")
   @ResponseStatus(HttpStatus.CREATED)
   public UserInfoDto registerUser(@RequestBody NewUserDto user) {
     return UserInfoDto.from(this.usersService.registerUser(user));
@@ -26,12 +26,6 @@ public class UsersController {
 
   @PostMapping("/login")
   public UserInfoDto loginUser(@RequestBody UserCredentialsDto credentials) {
-    var user = this.usersService.loginUser(credentials);
-    if (user.isPresent()) {
-      return UserInfoDto.from(user.get());
-    }
-    else {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login fehlgeschlagen! Ungültige Email/Passwort-Kombination!");
-    }
+    return this.usersService.loginUser(credentials);
   }
 }
